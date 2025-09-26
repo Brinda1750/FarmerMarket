@@ -171,12 +171,12 @@ const Products = () => {
                       </p>
                       
                       {/* Store Info */}
-                      {/* <div className="mb-3">
+                      <div className="mb-3">
                         <p className="text-xs text-muted-foreground">
                           Sold by <span className="font-medium text-primary">{product.stores.name}</span>
                         </p>
                         <p className="text-xs text-muted-foreground">📍 {product.stores.city}</p>
-                      </div> */}
+                      </div>
 
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
