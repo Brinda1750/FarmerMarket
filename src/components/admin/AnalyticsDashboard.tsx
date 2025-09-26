@@ -369,8 +369,8 @@ const AnalyticsDashboard = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Badge variant="outline">{store.products} products</Badge>
-                    <Badge variant="secondary">{store.orders} orders</Badge>
+                    {/* <Badge variant="outline">{store.products} products</Badge>
+                    <Badge variant="secondary">{store.orders} orders</Badge> */}
                   </div>
                 </div>
               ))}
