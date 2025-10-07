@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Layout from "@/components/layout/Layout";
 import { Leaf, Star, Heart, ShoppingCart, Users, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  dummyCategories, 
-  dummyProducts, 
-  dummyStores, 
-  getFeaturedProducts, 
-  getActiveStores 
-} from '@/data/dummyData';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import heroImage from "@/assets/hero-farming.jpg";
 import vegetablesIcon from "@/assets/vegetables-icon.jpg";
 import fruitsIcon from "@/assets/fruits-icon.jpg";
@@ -23,34 +18,28 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  discount_price?: number;
-  images: string[];
-  rating: number;
-  total_reviews: number;
-  unit: string;
-  store: {
-    name: string;
-    id: string;
-  };
-  category: {
-    name: string;
-  };
+  discount_price?: number | null;
+  images: string[] | null;
+  rating: number | null;
+  total_reviews: number | null;
+  unit: string | null;
 }
 
 interface Category {
   id: string;
   name: string;
-  description: string;
-  image_url?: string;
+  description: string | null;
+  image_url?: string | null;
+  is_active?: boolean;
 }
 
 interface Store {
   id: string;
   name: string;
-  description: string;
-  city: string;
-  rating: number;
-  total_reviews: number;
+  description: string | null;
+  city: string | null;
+  rating: number | null;
+  total_reviews: number | null;
   status: string;
 }
 
@@ -60,6 +49,7 @@ const Index = () => {
   const [popularStores, setPopularStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     loadData();
@@ -67,12 +57,47 @@ const Index = () => {
 
   const loadData = async () => {
     try {
-      // Using dummy data for now - will be replaced with real data later
-      setCategories(dummyCategories);
-      setFeaturedProducts(getFeaturedProducts());
-      setPopularStores(getActiveStores());
-    } catch (error) {
+      const [categoriesRes, productsRes, storesRes] = await Promise.all([
+        supabase
+          .from('categories')
+          .select('*')
+          .eq('is_active', true)
+          .order('name', { ascending: true })
+          .limit(4),
+        supabase
+          .from('products')
+          .select('*')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(24),
+        supabase
+          .from('stores')
+          .select('*')
+          .eq('status', 'active')
+          .order('rating', { ascending: false })
+          .limit(6),
+      ]);
+
+      if (categoriesRes.error) throw categoriesRes.error;
+      if (productsRes.error) throw productsRes.error;
+      if (storesRes.error) throw storesRes.error;
+
+      setCategories(categoriesRes.data || []);
+      // Randomize and pick 4 products for the homepage each load
+      const all = productsRes.data || [];
+      for (let i = all.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [all[i], all[j]] = [all[j], all[i]];
+      }
+      setFeaturedProducts(all.slice(0, 4));
+      setPopularStores(storesRes.data || []);
+    } catch (error: any) {
       console.error('Error loading data:', error);
+      toast({
+        title: 'Failed to load homepage data',
+        description: 'Please try again in a moment.',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
@@ -113,11 +138,11 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-8 pt-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-foreground">500+</div>
+                    <div className="text-2xl font-bold text-foreground">10+</div>
                     <div className="text-sm text-muted-foreground">Local Farmers</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-foreground">10k+</div>
+                    <div className="text-2xl font-bold text-foreground">15+</div>
                     <div className="text-sm text-muted-foreground">Happy Customers</div>
                   </div>
                   <div className="text-center">
@@ -201,15 +226,23 @@ const Index = () => {
                 Hand-picked premium products from our trusted local farmers
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredProducts.map((product) => (
                 <Link key={product.id} to={`/product/${product.id}`}>
                   <Card className="hover:shadow-2xl transition-all duration-300 cursor-pointer group border-0 bg-card/80 backdrop-blur hover:-translate-y-1">
                     <CardContent className="p-0">
                       <div className="relative overflow-hidden rounded-t-lg">
-                        <div className="h-64 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
-                          <Leaf className="w-20 h-20 text-green-600 group-hover:scale-110 transition-transform duration-300" />
-                        </div>
+                        {product.images && product.images.length > 0 ? (
+                          <img 
+                            src={product.images[0]}
+                            alt={product.name}
+                            className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="h-64 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+                            <Leaf className="w-20 h-20 text-green-600 group-hover:scale-110 transition-transform duration-300" />
+                          </div>
+                        )}
                         <div className="absolute top-4 right-4">
                           <Button variant="secondary" size="sm" className="bg-white/90 hover:bg-white p-2 rounded-full shadow-md">
                             <Heart className="w-4 h-4" />
@@ -334,7 +367,7 @@ const Index = () => {
             <p className="text-2xl mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
               Join thousands of satisfied customers who choose fresh, local produce and support sustainable farming
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Button size="lg" variant="secondary" className="px-8 py-6 text-lg font-semibold" asChild>
                 <Link to={user ? "#products" : "/auth"}>
                   <ShoppingCart className="w-5 h-5 mr-2" />
@@ -352,7 +385,7 @@ const Index = () => {
                   Start Selling
                 </Link>
               </Button>
-            </div>
+            </div> */}
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
                 <div className="bg-white/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
