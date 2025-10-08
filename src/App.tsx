@@ -17,6 +17,8 @@ import Products from "./pages/Products";
 import Stores from "./pages/Stores";
 import AddProduct from "./pages/AddProduct";
 import SellerProducts from "./pages/SellerProducts";
+import SellerOrders from "./pages/SellerOrders";
+import SellerAnalytics from "./pages/SellerAnalytics";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Cart from "./pages/Cart";
@@ -41,6 +43,8 @@ const App = () => (
             <Route path="/admin-setup" element={<AdminSetup />} />
             <Route path="/seller/add-product" element={<AddProduct />} />
             <Route path="/seller/products" element={<SellerProducts />} />
+            <Route path="/seller/orders" element={<SellerOrders />} />
+            <Route path="/seller/analytics" element={<SellerAnalytics />} />
             <Route path="/products" element={<Products />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />

@@ -125,7 +125,7 @@ const Auth = () => {
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-3 mb-4">
                     <Label>Login as</Label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-md border hover:bg-muted/50 transition-colors">
                         <input
                           type="radio"
@@ -150,7 +150,7 @@ const Auth = () => {
                         <User className="w-4 h-4" />
                         <span className="text-sm">Seller</span>
                       </label>
-                      <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-md border hover:bg-muted/50 transition-colors">
+                      {/* <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-md border hover:bg-muted/50 transition-colors">
                         <input
                           type="radio"
                           name="loginMode"
@@ -161,11 +161,11 @@ const Auth = () => {
                         />
                         <Shield className="w-4 h-4" />
                         <span className="text-sm">Admin</span>
-                      </label>
+                      </label> */}
                     </div>
                   </div>
 
-                  {loginMode === 'admin' && (
+                  {/* {loginMode === 'admin' && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                       <div className="flex items-center gap-2 text-blue-700">
                         <Shield className="w-4 h-4" />
@@ -175,7 +175,7 @@ const Auth = () => {
                         Using default admin credentials
                       </p>
                     </div>
-                  )}
+                  )} */}
 
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>
@@ -226,22 +226,22 @@ const Auth = () => {
                     {isLoading ? "Signing In..." : "Sign In"}
                   </Button>
                 </form>
-
+{/* 
                 <Separator />
                 
                 <div className="text-center text-sm text-muted-foreground">
                   <p>Demo Admin Account:</p>
                   <p>Email: admin@gmail.com</p>
                   <p>Password: Admin@123</p>
-                </div>
+                </div> */}
               </TabsContent>
               
               <TabsContent value="signup" className="space-y-4 mt-6">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-3 mb-4">
                     <Label>Sign up as</Label>
-                    <div className="flex gap-6">
-                      <label className="flex items-center space-x-2 cursor-pointer">
+                    <div className="flex grid grid-cols-2 gap-2">
+                    <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-md border hover:bg-muted/50 transition-colors">
                         <input
                           type="radio"
                           name="signupRole"
@@ -250,9 +250,10 @@ const Auth = () => {
                           onChange={(e) => setUserRole(e.target.value as 'user' | 'seller')}
                           className="w-4 h-4 text-primary"
                         />
+                        <User className="w-4 h-4" />
                         <span className="text-sm">User</span>
                       </label>
-                      <label className="flex items-center space-x-2 cursor-pointer">
+                      <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-md border hover:bg-muted/50 transition-colors">
                         <input
                           type="radio"
                           name="signupRole"
@@ -261,6 +262,7 @@ const Auth = () => {
                           onChange={(e) => setUserRole(e.target.value as 'user' | 'seller')}
                           className="w-4 h-4 text-primary"
                         />
+                        <User className="w-4 h-4" />
                         <span className="text-sm">Seller</span>
                       </label>
                     </div>
