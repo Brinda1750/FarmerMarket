@@ -94,6 +94,9 @@ export type Database = {
           price: number
           product_id: string
           quantity: number
+          received_at: string | null
+          received_confirmed: boolean | null
+          seller_status: Database["public"]["Enums"]["seller_item_status"] | null
           store_id: string
           total: number
         }
@@ -104,6 +107,9 @@ export type Database = {
           price: number
           product_id: string
           quantity: number
+          received_at?: string | null
+          received_confirmed?: boolean | null
+          seller_status?: Database["public"]["Enums"]["seller_item_status"] | null
           store_id: string
           total: number
         }
@@ -114,6 +120,9 @@ export type Database = {
           price?: number
           product_id?: string
           quantity?: number
+          received_at?: string | null
+          received_confirmed?: boolean | null
+          seller_status?: Database["public"]["Enums"]["seller_item_status"] | null
           store_id?: string
           total?: number
         }
@@ -663,6 +672,7 @@ export const Constants = {
         "cancelled",
       ],
       product_status: ["active", "inactive", "out_of_stock"],
+      seller_item_status: ["pending", "approved", "discarded", "received"],
       store_status: ["active", "inactive", "pending"],
       user_role: ["admin", "user", "seller"],
     },
