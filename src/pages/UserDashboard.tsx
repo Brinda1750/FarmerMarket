@@ -60,6 +60,7 @@ interface Order {
     id: string;
     quantity: number;
     price: number;
+    seller_status?: 'pending' | 'approved' | 'discarded' | 'received';
     product: {
       name: string;
       images: string[];
@@ -237,6 +238,21 @@ const UserDashboard = () => {
     doc.setFontSize(10);
     doc.text('Thank you for your purchase!', 14, y);
     doc.save(`receipt_${order.order_number}.pdf`);
+  };
+
+  const confirmReceived = async (orderId: string) => {
+    try {
+      const { error } = await supabase
+        .from('order_items')
+        .update({ seller_status: 'received', received_confirmed: true, received_at: new Date().toISOString() })
+        .eq('order_id', orderId)
+        .eq('seller_status', 'approved');
+      if (error) throw error;
+      toast({ title: 'Thank you!', description: 'Delivery confirmed.' });
+      loadDashboardData();
+    } catch (e: any) {
+      toast({ title: 'Error', description: e.message || 'Failed to confirm receipt', variant: 'destructive' });
+    }
   };
 
   if (loading) {
@@ -590,12 +606,15 @@ const UserDashboard = () => {
                         </TableCell>
                         <TableCell>
                           <Badge variant={
-                            order.status === 'delivered' ? 'default' :
-                            order.status === 'shipped' ? 'secondary' :
-                            order.status === 'confirmed' ? 'outline' :
-                            'destructive'
+                            order.order_items.some(it => it.seller_status === 'received') ? 'default' :
+                            order.order_items.some(it => it.seller_status === 'approved') ? 'secondary' :
+                            order.order_items.some(it => it.seller_status === 'discarded') ? 'destructive' :
+                            'outline'
                           }>
-                            {order.status}
+                            {order.order_items.some(it => it.seller_status === 'received') ? 'Received' :
+                             order.order_items.some(it => it.seller_status === 'approved') ? 'Approved' :
+                             order.order_items.some(it => it.seller_status === 'discarded') ? 'Discarded' :
+                             'Pending'}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -606,6 +625,11 @@ const UserDashboard = () => {
                             <Eye className="w-3 h-3 mr-1" />
                             View Details
                           </Button>
+                          {order.order_items.some(it => it.seller_status === 'approved') && !order.order_items.some(it => it.seller_status === 'received') && (
+                            <Button className="ml-2" size="sm" onClick={() => confirmReceived(order.id)}>
+                              Received
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

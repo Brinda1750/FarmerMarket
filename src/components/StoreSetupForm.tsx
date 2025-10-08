@@ -42,13 +42,19 @@ const StoreSetupForm = ({ onSuccess }: StoreSetupFormProps) => {
     setIsLoading(true);
 
     try {
+      // assign random images
+      const randomSeed = Math.floor(Math.random() * 1000000);
+      const logoUrl = `https://picsum.photos/seed/storelogo-${randomSeed}/200/200`;
+      const bannerUrl = `https://picsum.photos/seed/storebanner-${randomSeed}/1200/300`;
       const { error } = await supabase
         .from('stores')
         .insert([
           {
             ...formData,
             seller_id: user.id,
-            status: 'pending'
+            status: 'pending',
+            logo_url: logoUrl,
+            banner_url: bannerUrl
           }
         ]);
 
