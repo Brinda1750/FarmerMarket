@@ -77,7 +77,7 @@ const Checkout = () => {
             user_id: profile.id,
             order_number: orderNumber,
             total_amount: subtotal,
-            status: 'confirmed',
+            status: 'pending',
             shipping_address: address,
             shipping_city: city,
             shipping_state: state,
@@ -103,6 +103,8 @@ const Checkout = () => {
 
       const { error: oiError } = await supabase.from('order_items').insert(orderItemsPayload);
       if (oiError) throw oiError;
+
+      console.log('Order created successfully:', { order, orderItemsPayload });
 
       await supabase.from('cart').delete().eq('user_id', profile.id);
 
