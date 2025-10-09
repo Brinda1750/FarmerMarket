@@ -22,6 +22,8 @@ const StoreSetupForm = ({ onSuccess }: StoreSetupFormProps) => {
     pincode: '',
     phone: '',
     email: '',
+    logo_url: '',
+    banner_url: '',
   });
 
   const { user } = useAuth();
@@ -42,19 +44,13 @@ const StoreSetupForm = ({ onSuccess }: StoreSetupFormProps) => {
     setIsLoading(true);
 
     try {
-      // assign random images
-      const randomSeed = Math.floor(Math.random() * 1000000);
-      const logoUrl = `https://picsum.photos/seed/storelogo-${randomSeed}/200/200`;
-      const bannerUrl = `https://picsum.photos/seed/storebanner-${randomSeed}/1200/300`;
       const { error } = await supabase
         .from('stores')
         .insert([
           {
             ...formData,
             seller_id: user.id,
-            status: 'pending',
-            logo_url: logoUrl,
-            banner_url: bannerUrl
+            status: 'pending'
           }
         ]);
 
@@ -132,6 +128,38 @@ const StoreSetupForm = ({ onSuccess }: StoreSetupFormProps) => {
           value={formData.email}
           onChange={handleInputChange}
         />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="logo_url">Store Logo URL</Label>
+          <Input
+            id="logo_url"
+            name="logo_url"
+            type="url"
+            placeholder="https://example.com/logo.jpg"
+            value={formData.logo_url}
+            onChange={handleInputChange}
+          />
+          <p className="text-xs text-muted-foreground">
+            Enter a URL to your store logo image
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="banner_url">Store Banner URL</Label>
+          <Input
+            id="banner_url"
+            name="banner_url"
+            type="url"
+            placeholder="https://example.com/banner.jpg"
+            value={formData.banner_url}
+            onChange={handleInputChange}
+          />
+          <p className="text-xs text-muted-foreground">
+            Enter a URL to your store banner image
+          </p>
+        </div>
       </div>
 
       <div className="space-y-2">

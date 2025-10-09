@@ -17,6 +17,8 @@ interface Store {
   pincode: string;
   phone: string;
   email: string;
+  logo_url?: string;
+  banner_url?: string;
 }
 
 interface StoreEditModalProps {
@@ -37,6 +39,8 @@ const StoreEditModal = ({ isOpen, onClose, store, onSuccess }: StoreEditModalPro
     pincode: '',
     phone: '',
     email: '',
+    logo_url: '',
+    banner_url: '',
   });
 
   const { toast } = useToast();
@@ -52,6 +56,8 @@ const StoreEditModal = ({ isOpen, onClose, store, onSuccess }: StoreEditModalPro
         pincode: store.pincode || '',
         phone: store.phone || '',
         email: store.email || '',
+        logo_url: store.logo_url || '',
+        banner_url: store.banner_url || '',
       });
     }
   }, [store]);
@@ -157,6 +163,38 @@ const StoreEditModal = ({ isOpen, onClose, store, onSuccess }: StoreEditModalPro
               value={formData.email}
               onChange={handleInputChange}
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="logo_url">Store Logo URL</Label>
+              <Input
+                id="logo_url"
+                name="logo_url"
+                type="url"
+                placeholder="https://example.com/logo.jpg"
+                value={formData.logo_url}
+                onChange={handleInputChange}
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter a URL to your store logo image
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="banner_url">Store Banner URL</Label>
+              <Input
+                id="banner_url"
+                name="banner_url"
+                type="url"
+                placeholder="https://example.com/banner.jpg"
+                value={formData.banner_url}
+                onChange={handleInputChange}
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter a URL to your store banner image
+              </p>
+            </div>
           </div>
 
           <div className="space-y-2">
