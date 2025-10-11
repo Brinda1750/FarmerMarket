@@ -120,7 +120,7 @@ const Index = () => {
                   Fresh from <span className="text-primary">Farm</span> to Your Table
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  Connect directly with local farmers and get the freshest organic produce delivered to your doorstep. Support local agriculture while enjoying premium quality food.
+                  Connect directly with local farmers and get the freshest organic produce delivered to your doorstep. Support India's agriculture while enjoying premium quality food.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg" asChild>
