@@ -1,0 +1,11 @@
+data "terraform_remote_state" "global" {
+  backend = "s3"
+  config = {
+    bucket         = "farmermarket-tfstate"
+    key            = "global/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "farmermarket-tfstate-lock"
+    encrypt        = true
+  }
+}
+
